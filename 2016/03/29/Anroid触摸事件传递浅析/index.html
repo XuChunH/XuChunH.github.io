@@ -57,20 +57,17 @@
 
 
 
-<meta name="description" content="Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。
-View的触摸事件分发先来段示例测试一下。123456789private void setButtonTouchListener()&amp;#123;">
+<meta name="description" content="Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Anroid触摸事件分发浅析">
 <meta property="og:url" content="http://XuChunH.github.io/2016/03/29/Anroid触摸事件传递浅析/index.html">
 <meta property="og:site_name" content="闲游者00">
-<meta property="og:description" content="Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。
-View的触摸事件分发先来段示例测试一下。123456789private void setButtonTouchListener()&amp;#123;">
+<meta property="og:description" content="Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。">
 <meta property="og:image" content="http://XuChunH.github.io/2016/03/29/Anroid触摸事件传递浅析/01.PNG">
-<meta property="og:updated_time" content="2016-03-29T12:46:55.143Z">
+<meta property="og:updated_time" content="2016-05-01T11:14:54.701Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Anroid触摸事件分发浅析">
-<meta name="twitter:description" content="Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。
-View的触摸事件分发先来段示例测试一下。123456789private void setButtonTouchListener()&amp;#123;">
+<meta name="twitter:description" content="Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。">
 <meta name="twitter:image" content="http://XuChunH.github.io/2016/03/29/Anroid触摸事件传递浅析/01.PNG">
 
 
@@ -278,6 +275,7 @@ View的触摸事件分发先来段示例测试一下。123456789private void set
 
       
         <p>Android触摸事件的分发，其重要性不用多说，熟练了，写个star过百的控件应该不成问题，我也不知道这么说合不合理，我就是想在开头写些东西。<br>重要的事情忘了说，下面涉及的Android源码为23的，其他版本可能有不一样，不过没事，我们看注释。</p>
+<a id="more"></a>
 <h1 id="View的触摸事件分发"><a href="#View的触摸事件分发" class="headerlink" title="View的触摸事件分发"></a>View的触摸事件分发</h1><p>先来段示例测试一下。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setButtonTouchListener</span><span class="params">()</span></span>&#123;</span><br><span class="line">        button.setOnTouchListener(<span class="keyword">new</span> View.OnTouchListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouch</span><span class="params">(View v, MotionEvent event)</span> </span>&#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onTouch[action: "</span> + event.getAction() +<span class="string">"]"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setButtonClickListener</span><span class="params">()</span></span>&#123;</span><br><span class="line">        button.setOnClickListener(<span class="keyword">new</span> View.OnClickListener() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClick</span><span class="params">(View v)</span> </span>&#123;</span><br><span class="line">                Log.i(TAG, <span class="string">"onClick"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>我在布局中添加了一个Button，然后给这个Button设置了OnTouchListener和OnClickListener，下面来看看结果：</p>
